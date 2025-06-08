@@ -12,7 +12,7 @@
 
     <!--Following blocks are exclusive for NKD building-->
     <PropertyGroup Condition="$(IsAndroid) == 'true'">
-        <NdkPropertiesFile>$(ANDROID_NDK_ROOT)\source.properties</NdkPropertiesFile>
+        <NdkPropertiesFile>$(ANDROID_NDK_ROOT)/source.properties</NdkPropertiesFile>
         <NdkHost Condition="$(IsWindowsHost) == 'true'">windows-x86_64</NdkHost>
         <NdkHost Condition="$(IsLinuxHost) == 'true'">linux-x86_64</NdkHost>
         <NdkHost Condition="$(IsOSXHost) == 'true'">darwin-x86_64</NdkHost>

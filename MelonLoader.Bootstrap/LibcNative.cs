@@ -11,7 +11,7 @@ internal partial class LibcNative
 
     internal const int SeekEnd = 2;
 
-#if LINUX || OSX
+#if (LINUX || OSX) && !ANDROID
     internal const int RtldLazy = 0x1;
     internal const int RtldNoLoad = 0x10;
     
