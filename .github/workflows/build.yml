@@ -163,12 +163,11 @@ jobs:
           cat "$ANDROID_NDK_ROOT/source.properties"
 
       - name: Restore Dependencies
-        run: dotnet restore
+        run: dotnet restore -r linux-bionic-arm64
 
       - name: Build Debug for Android arm64-v8a
         run: |
-          dotnet build MelonLoader.Bootstrap/MelonLoader.Bootstrap.csproj --no-restore -c Debug -r linux-bionic-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
-          dotnet build MelonLoader.NativeHost/MelonLoader.NativeHost.csproj --no-restore -c Debug -r linux-bionic-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
+          dotnet build --no-restore -c Debug -r linux-bionic-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
 
       - name: Upload Debug for Android arm64-v8a
         uses: actions/upload-artifact@v4
@@ -178,8 +177,7 @@ jobs:
 
       - name: Build Release for Android arm64-v8a
         run: |
-          dotnet build MelonLoader.Bootstrap/MelonLoader.Bootstrap.csproj --no-restore -c Release -r linux-bionic-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
-          dotnet build MelonLoader.NativeHost/MelonLoader.NativeHost.csproj --no-restore -c Release -r linux-bionic-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
+          dotnet build --no-restore -c Release -r linux-bionic-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
 
       - name: Upload Release for Android arm64-v8a
         uses: actions/upload-artifact@v4
