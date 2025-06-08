@@ -12,6 +12,9 @@
 
     <!--Following blocks are exclusive for NKD building-->
     <PropertyGroup Condition="$(IsAndroid) == 'true'">
+        <!-- Define ANDROID preprocessor directive -->
+        <DefineConstants>$(DefineConstants);ANDROID</DefineConstants>
+        
         <!-- Check if ANDROID_NDK_ROOT is set -->
         <AndroidNdkRoot Condition="'$(AndroidNdkRoot)' == ''">$(ANDROID_NDK_ROOT)</AndroidNdkRoot>
         <AndroidNdkRoot Condition="'$(AndroidNdkRoot)' == ''">$(ANDROID_NDK_HOME)</AndroidNdkRoot>

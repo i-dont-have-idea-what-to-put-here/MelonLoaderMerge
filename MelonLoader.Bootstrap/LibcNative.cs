@@ -33,6 +33,8 @@ internal partial class LibcNative
     [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
     public static partial nint Dlsym(nint handle, string symbol);
 
+#endif
+
     [LibraryImport("libc", EntryPoint = "setenv", StringMarshalling = StringMarshalling.Utf8)]
     [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
     public static partial int Setenv(string name, string value,[MarshalAs(UnmanagedType.Bool)] bool overwrite);
@@ -72,7 +74,6 @@ internal partial class LibcNative
     [LibraryImport("libc", EntryPoint = "fclose")]
     [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
     public static partial int FClose(nint stream);
-#endif
 
 #if ANDROID
     [LibraryImport("libdl", EntryPoint = "dlsym", StringMarshalling = StringMarshalling.Utf8)]

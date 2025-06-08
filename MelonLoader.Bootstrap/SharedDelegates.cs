@@ -29,7 +29,7 @@ internal delegate void ActionFn();
 internal delegate bool BoolRetFn();
 
 [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-internal delegate void GetLoaderConfigFn(ref LoaderConfig config);
+internal delegate void GetLoaderConfigFn(ref MelonLoader.LoaderConfig config);
 
 #if ANDROID
 [UnmanagedFunctionPointer(CallingConvention.StdCall)]
