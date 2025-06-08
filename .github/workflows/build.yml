@@ -165,20 +165,20 @@ jobs:
       - name: Restore Dependencies
         run: dotnet restore
 
-      - name: Build Debug for linux-bionic-arm64
-        run: dotnet publish MelonLoader.Bootstrap/MelonLoader.Bootstrap.csproj --no-restore -c Debug -p:RuntimeIdentifier="linux-bionic-arm64" -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
+      - name: Build Debug for Android arm64-v8a
+        run: dotnet publish MelonLoader.Bootstrap/MelonLoader.Bootstrap.csproj --no-restore -c Debug -r linux-bionic-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
 
-      - name: Upload Debug for linux-bionic-arm64
+      - name: Upload Debug for Android arm64-v8a
         uses: actions/upload-artifact@v4
         with:
-          name: MelonLoader.Android.arm64.CI.Debug
+          name: MelonLoader.Android.arm64-v8a.CI.Debug
           path: Output/Debug/linux-bionic-arm64
 
-      - name: Build Release for linux-bionic-arm64
-        run: dotnet publish MelonLoader.Bootstrap/MelonLoader.Bootstrap.csproj --no-restore -c Release -p:RuntimeIdentifier="linux-bionic-arm64" -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
+      - name: Build Release for Android arm64-v8a
+        run: dotnet publish MelonLoader.Bootstrap/MelonLoader.Bootstrap.csproj --no-restore -c Release -r linux-bionic-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
 
-      - name: Upload Release for linux-bionic-arm64
+      - name: Upload Release for Android arm64-v8a
         uses: actions/upload-artifact@v4
         with:
-          name: MelonLoader.Android.arm64.CI.Release
+          name: MelonLoader.Android.arm64-v8a.CI.Release
           path: Output/Release/linux-bionic-arm64
