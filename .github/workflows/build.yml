@@ -166,7 +166,7 @@ jobs:
         run: dotnet restore -r linux-bionic-arm64
 
       - name: Build Debug for Android arm64-v8a
-        run: dotnet publish --no-restore -c Debug -r linux-bionic-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
+        run: dotnet publish --no-restore -c Debug -r linux-bionic-arm64 -p:RuntimeIdentifier=linux-bionic-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
 
       - name: Upload Debug for Android arm64-v8a
         uses: actions/upload-artifact@v4
@@ -175,7 +175,7 @@ jobs:
           path: Output/Debug/linux-bionic-arm64
 
       - name: Build Release for Android arm64-v8a
-        run: dotnet publish --no-restore -c Release -r linux-bionic-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
+        run: dotnet publish --no-restore -c Release -r linux-bionic-arm64 -p:RuntimeIdentifier=linux-bionic-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
 
       - name: Upload Release for Android arm64-v8a
         uses: actions/upload-artifact@v4
