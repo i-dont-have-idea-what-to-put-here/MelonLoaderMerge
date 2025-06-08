@@ -68,6 +68,9 @@
 
     <ItemGroup>
         <Compile Include="$(SolutionDir)/MelonLoader/LoaderConfig.cs" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(RuntimeIdentifier.StartsWith(`linux-bionic-`))' == 'true'">
         <Compile Include="$(SolutionDir)/MelonLoader/JNI/*" Link="JNI/%(Filename)%(Extension)" />
         <Compile Include="$(SolutionDir)/MelonLoader/Utils/APKAssetManager.cs" Link="Proxy/Android/%(Filename)%(Extension)" />
     </ItemGroup>
