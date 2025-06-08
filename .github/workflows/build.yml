@@ -167,6 +167,8 @@ jobs:
 
       - name: Build Debug for Android arm64-v8a
         run: |
+          SOLUTION_DIR=$(pwd)
+          echo "Solution directory: $SOLUTION_DIR"
           for project in $(dotnet sln list | grep '.csproj'); do
             echo "Building $project in Debug..."
             dotnet build "$project" --no-restore -c Debug -r linux-bionic-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
@@ -180,6 +182,8 @@ jobs:
 
       - name: Build Release for Android arm64-v8a
         run: |
+          SOLUTION_DIR=$(pwd)
+          echo "Solution directory: $SOLUTION_DIR"
           for project in $(dotnet sln list | grep '.csproj'); do
             echo "Building $project in Release..."
             dotnet build "$project" --no-restore -c Release -r linux-bionic-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
