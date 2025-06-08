@@ -7,9 +7,9 @@ env:
 
 on:
   push:
-    branches: [ master, alpha-development, v0.6.0-rewrite ]
+    branches: [ master, alpha-development, v0.6.0-rewrite, android ]
   pull_request:
-    branches: [ master, alpha-development, v0.6.0-rewrite ]
+    branches: [ master, alpha-development, v0.6.0-rewrite, android ]
   workflow_dispatch:
 
 jobs:
@@ -132,3 +132,53 @@ jobs:
         with:
           name: MelonLoader.macOS.x64.CI.Release
           path: Output/Release/osx-x64
+  
+  build_android:
+    name: Build Android Binaries
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Setup Android NDK
+        id: setup-ndk
+        uses: nttld/setup-ndk@v1
+        with:
+          ndk-version: r27c
+          add-to-path: false
+
+      - name: Set Android NDK environment
+        run: |
+          echo "ANDROID_NDK_ROOT=${{ steps.setup-ndk.outputs.ndk-path }}" >> $GITHUB_ENV
+          echo "ANDROID_NDK_HOME=${{ steps.setup-ndk.outputs.ndk-path }}" >> $GITHUB_ENV
+
+      - name: Verify NDK installation
+        run: |
+          echo "NDK Root: $ANDROID_NDK_ROOT"
+          ls -la "$ANDROID_NDK_ROOT"
+          cat "$ANDROID_NDK_ROOT/source.properties"
+
+      - name: Restore Dependencies
+        run: dotnet restore
+
+      - name: Build Debug for linux-bionic-arm64
+        run: dotnet publish MelonLoader.Bootstrap/MelonLoader.Bootstrap.csproj --no-restore -c Debug -p:RuntimeIdentifier="linux-bionic-arm64" -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
+
+      - name: Upload Debug for linux-bionic-arm64
+        uses: actions/upload-artifact@v4
+        with:
+          name: MelonLoader.Android.arm64.CI.Debug
+          path: Output/Debug/linux-bionic-arm64
+
+      - name: Build Release for linux-bionic-arm64
+        run: dotnet publish MelonLoader.Bootstrap/MelonLoader.Bootstrap.csproj --no-restore -c Release -p:RuntimeIdentifier="linux-bionic-arm64" -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
+
+      - name: Upload Release for linux-bionic-arm64
+        uses: actions/upload-artifact@v4
+        with:
+          name: MelonLoader.Android.arm64.CI.Release
+          path: Output/Release/linux-bionic-arm64
