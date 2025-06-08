@@ -12,21 +12,32 @@
 
     <!--Following blocks are exclusive for NKD building-->
     <PropertyGroup Condition="$(IsAndroid) == 'true'">
-        <NdkPropertiesFile>$(ANDROID_NDK_ROOT)/source.properties</NdkPropertiesFile>
+        <!-- Check if ANDROID_NDK_ROOT is set -->
+        <AndroidNdkRoot Condition="'$(AndroidNdkRoot)' == ''">$(ANDROID_NDK_ROOT)</AndroidNdkRoot>
+        <AndroidNdkRoot Condition="'$(AndroidNdkRoot)' == ''">$(ANDROID_NDK_HOME)</AndroidNdkRoot>
+        
+        <NdkPropertiesFile>$(AndroidNdkRoot)/source.properties</NdkPropertiesFile>
         <NdkHost Condition="$(IsWindowsHost) == 'true'">windows-x86_64</NdkHost>
         <NdkHost Condition="$(IsLinuxHost) == 'true'">linux-x86_64</NdkHost>
         <NdkHost Condition="$(IsOSXHost) == 'true'">darwin-x86_64</NdkHost>
-        <SysRoot Condition="'$(SysRoot)' == ''">$(ANDROID_NDK_ROOT)/toolchains/llvm/prebuilt/$(NdkHost)/sysroot</SysRoot>
+        <SysRoot Condition="'$(SysRoot)' == ''">$(AndroidNdkRoot)/toolchains/llvm/prebuilt/$(NdkHost)/sysroot</SysRoot>
         <!--Retrieves NDK version-->
-        <BaseRevision>$([System.IO.File]::ReadAllText('$(NdkPropertiesFile)'))</BaseRevision>
-        <NdkVersion>$([System.Text.RegularExpressions.Regex]::Match('$(BaseRevision)', 'Pkg.Revision\s*=\s*(\S+)').Groups[1].Value.Split('.')[0])</NdkVersion>
+        <BaseRevision Condition="Exists('$(NdkPropertiesFile)')">$([System.IO.File]::ReadAllText('$(NdkPropertiesFile)'))</BaseRevision>
+        <NdkVersion Condition="'$(BaseRevision)' != ''">$([System.Text.RegularExpressions.Regex]::Match('$(BaseRevision)', 'Pkg.Revision\s*=\s*(\S+)').Groups[1].Value.Split('.')[0])</NdkVersion>
         <NdkVersion Condition="'$(NdkVersion)' == ''">0</NdkVersion>
     </PropertyGroup>
 
+    <!-- Error if Android NDK is not found -->
+    <Target Name="CheckAndroidNdk" BeforeTargets="Build" Condition="$(IsAndroid) == 'true'">
+        <Error Text="Android NDK not found. Please set ANDROID_NDK_ROOT or ANDROID_NDK_HOME environment variable. Current AndroidNdkRoot: '$(AndroidNdkRoot)'" 
+               Condition="'$(AndroidNdkRoot)' == '' Or !Exists('$(NdkPropertiesFile)')" />
+        <Message Text="Using Android NDK at: $(AndroidNdkRoot)" Importance="high" />
+    </Target>
+
     <PropertyGroup Condition="$(IsAndroid) == 'true'">
         <!--OSX and Linux can use NDK directly-->
-        <CppCompilerAndLinker Condition="$(IsWindowsHost) != 'true'">$(ANDROID_NDK_ROOT)/toolchains/llvm/prebuilt/$(NdkHost)/bin/clang</CppCompilerAndLinker>
-        <ObjCopyName Condition="$(IsWindowsHost) != 'true'">$(ANDROID_NDK_ROOT)/toolchains/llvm/prebuilt/$(NdkHost)/bin/llvm-objcopy</ObjCopyName>
+        <CppCompilerAndLinker Condition="$(IsWindowsHost) != 'true'">$(AndroidNdkRoot)/toolchains/llvm/prebuilt/$(NdkHost)/bin/clang</CppCompilerAndLinker>
+        <ObjCopyName Condition="$(IsWindowsHost) != 'true'">$(AndroidNdkRoot)/toolchains/llvm/prebuilt/$(NdkHost)/bin/llvm-objcopy</ObjCopyName>
         <!--Windows should use batch files to work with NDK-->
         <CppCompilerAndLinker Condition="$(IsWindowsHost) == 'true'">android_clang.cmd</CppCompilerAndLinker>
         <ObjCopyName Condition="$(IsWindowsHost) == 'true'">android_llvm-objcopy.cmd</ObjCopyName>
@@ -55,8 +66,8 @@
     <!--Hack for using NDK executables on Windows-->
     <Target Condition="$(IsAndroid) == 'true'" Name="PrepareNdkBatches" AfterTargets="Build" BeforeTargets="IlcCompile">
         <PropertyGroup>
-            <NdkHostBin Condition="$(IsWindowsHost) == 'true'">$(ANDROID_NDK_ROOT)\toolchains\llvm\prebuilt\$(NdkHost)\bin\</NdkHostBin>
-            <NdkHostBin Condition="$(IsWindowsHost) != 'true'">$(ANDROID_NDK_ROOT)/toolchains/llvm/prebuilt/$(NdkHost)/bin/</NdkHostBin>
+            <NdkHostBin Condition="$(IsWindowsHost) == 'true'">$(AndroidNdkRoot)\toolchains\llvm\prebuilt\$(NdkHost)\bin\</NdkHostBin>
+            <NdkHostBin Condition="$(IsWindowsHost) != 'true'">$(AndroidNdkRoot)/toolchains/llvm/prebuilt/$(NdkHost)/bin/</NdkHostBin>
         </PropertyGroup>
         <!--Create Windows .cmd files-->
         <WriteLinesToFile Condition="$(IsWindowsHost) == 'true'" File="android_clang.cmd" Lines="&quot;$(NdkHostBin)clang.exe&quot; %*" Overwrite="true"/>
