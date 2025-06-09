@@ -135,7 +135,7 @@ jobs:
   
   build_android:
     name: Build Android Binaries
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
       
@@ -159,8 +159,8 @@ jobs:
       - name: Verify NDK installation
         run: |
           echo "NDK Root: $ANDROID_NDK_ROOT"
-          ls -la "$ANDROID_NDK_ROOT"
-          cat "$ANDROID_NDK_ROOT/source.properties"
+          dir "$ANDROID_NDK_ROOT"
+          type "$ANDROID_NDK_ROOT\source.properties"
 
       - name: Restore Dependencies
         run: dotnet restore -r linux-bionic-arm64
