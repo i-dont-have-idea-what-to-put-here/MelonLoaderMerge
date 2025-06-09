@@ -168,7 +168,7 @@ jobs:
 
       - name: Build Debug for android-arm64
         run: |
-          dotnet build --no-restore -c Debug -p:Platform="x64" -r linux-bionic-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
+          dotnet build --no-restore -c Debug -p:Platform="x64" -p:RuntimeIdentifier=linux-bionic-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
         env:
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
           ANDROID_NDK_ROOT: ${{ steps.setup-ndk.outputs.ndk-path }}
@@ -181,7 +181,7 @@ jobs:
 
       - name: Build Release for android-arm64
         run: |
-          dotnet build --no-restore -c Release -r linux-bionic-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
+          dotnet build --no-restore -c Release -p:RuntimeIdentifier=linux-bionic-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
         env:
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
           ANDROID_NDK_ROOT: ${{ steps.setup-ndk.outputs.ndk-path }}
