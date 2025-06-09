@@ -153,9 +153,9 @@ jobs:
 
       - name: Verify NDK installation
         run: |
-          echo "NDK Root: $ANDROID_NDK_ROOT"
-          dir "$ANDROID_NDK_ROOT"
-          type "$ANDROID_NDK_ROOT\source.properties"
+          echo "NDK Root: ${env:ANDROID_NDK_ROOT}"
+          dir "${env:ANDROID_NDK_ROOT}"
+          type "${env:ANDROID_NDK_ROOT}\source.properties"
         env:
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
           ANDROID_NDK_ROOT: ${{ steps.setup-ndk.outputs.ndk-path }}
