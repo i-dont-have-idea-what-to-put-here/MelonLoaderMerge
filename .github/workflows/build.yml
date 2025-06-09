@@ -156,15 +156,24 @@ jobs:
           echo "NDK Root: $ANDROID_NDK_ROOT"
           dir "$ANDROID_NDK_ROOT"
           type "$ANDROID_NDK_ROOT\source.properties"
+        env:
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+          ANDROID_NDK_ROOT: ${{ steps.setup-ndk.outputs.ndk-path }}
 
       - name: Restore Dependencies
         run: dotnet restore -r linux-bionic-arm64
+        env:
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+          ANDROID_NDK_ROOT: ${{ steps.setup-ndk.outputs.ndk-path }}
 
       - name: Build Debug for android-arm64
         run: |
           dotnet build --no-restore -c Debug -p:Platform="x64" -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
           dotnet build MelonLoader/MelonLoader.csproj --no-incremental --no-restore -c Debug -r linux-bionic-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
           dotnet build MelonLoader.Bootstrap/MelonLoader.Bootstrap.csproj --no-incremental --no-restore -c Debug -r linux-bionic-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
+        env:
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+          ANDROID_NDK_ROOT: ${{ steps.setup-ndk.outputs.ndk-path }}
 
       - name: Upload Debug for android-arm64
         uses: actions/upload-artifact@v4
@@ -177,6 +186,9 @@ jobs:
           dotnet build --no-restore -c Release -p:Platform="x64" -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
           dotnet build MelonLoader/MelonLoader.csproj --no-incremental --no-restore -c Release -r linux-bionic-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
           dotnet build MelonLoader.Bootstrap/MelonLoader.Bootstrap.csproj --no-incremental --no-restore -c Release -r linux-bionic-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
+        env:
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+          ANDROID_NDK_ROOT: ${{ steps.setup-ndk.outputs.ndk-path }}
 
       - name: Upload Release for android-arm64
         uses: actions/upload-artifact@v4
