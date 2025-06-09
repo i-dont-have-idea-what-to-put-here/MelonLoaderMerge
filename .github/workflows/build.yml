@@ -163,30 +163,28 @@ jobs:
           cat "$ANDROID_NDK_ROOT/source.properties"
 
       - name: Restore Dependencies
-        run: dotnet restore -r linux-bionic-arm64
+        run: dotnet restore -r android-arm64
 
-      - name: Build Debug for Android arm64-v8a
+      - name: Build Debug for android-arm64
         run: |
-          for project in $(dotnet msbuild MelonLoader.sln -t:ShowProjectsInBuildOrder -nologo); do
-            echo "Building $project in Debug..."
-            dotnet build "$project" --no-restore -c Debug -p:Platform="x64" -r linux-bionic-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
-          done
+          dotnet build --no-restore -c Debug -p:Platform="x64" -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
+          dotnet build MelonLoader/Melonloader.csproj --no-restore -c Debug -p:Platform="x64" -r android-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
+          dotnet build MelonLoader.Bootstrap/Melonloader.Bootstrap.csproj --no-restore -c Debug -p:Platform="x64" -r android-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
 
-      - name: Upload Debug for Android arm64-v8a
+      - name: Upload Debug for android-arm64
         uses: actions/upload-artifact@v4
         with:
-          name: MelonLoader.Android.arm64-v8a.CI.Debug
-          path: Output/Debug/linux-bionic-arm64
+          name: MelonLoader.Android.arm64.CI.Debug
+          path: Output/Debug/android-arm64
 
-      - name: Build Release for Android arm64-v8a
+      - name: Build Release for android-arm64
         run: |
-          for project in $(dotnet msbuild MelonLoader.sln -t:ShowProjectsInBuildOrder -nologo); do
-            echo "Building $project in Release..."
-            dotnet build "$project" --no-restore -c Release -p:Platform="x64" -r linux-bionic-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
-          done
+          dotnet build --no-restore -c Release -p:Platform="x64" -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
+          dotnet build MelonLoader/Melonloader.csproj --no-restore -c Release -p:Platform="x64" -r android-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
+          dotnet build MelonLoader.Bootstrap/Melonloader.Bootstrap.csproj --no-restore -c Release -p:Platform="x64" -r android-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
 
-      - name: Upload Release for Android arm64-v8a
+      - name: Upload Release for android-arm64
         uses: actions/upload-artifact@v4
         with:
-          name: MelonLoader.Android.arm64-v8a.CI.Release
-          path: Output/Release/linux-bionic-arm64
+          name: MelonLoader.Android.arm64.CI.Release
+          path: Output/Release/android-arm64
