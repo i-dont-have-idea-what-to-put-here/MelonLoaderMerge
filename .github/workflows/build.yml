@@ -149,12 +149,7 @@ jobs:
         uses: nttld/setup-ndk@v1
         with:
           ndk-version: r27c
-          add-to-path: false
-
-      - name: Set Android NDK environment
-        run: |
-          echo "ANDROID_NDK_ROOT=${{ steps.setup-ndk.outputs.ndk-path }}" >> $GITHUB_ENV
-          echo "ANDROID_NDK_HOME=${{ steps.setup-ndk.outputs.ndk-path }}" >> $GITHUB_ENV
+          add-to-path: true
 
       - name: Verify NDK installation
         run: |
