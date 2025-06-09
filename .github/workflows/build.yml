@@ -167,9 +167,7 @@ jobs:
 
       - name: Build Debug for Android arm64-v8a
         run: |
-          SOLUTION_DIR=$(pwd)
-          echo "Solution directory: $SOLUTION_DIR"
-          for project in $(dotnet msbuild your-solution.sln -t:ShowProjectsInBuildOrder -nologo); do
+          for project in $(dotnet msbuild MelonLoader.sln -t:ShowProjectsInBuildOrder -nologo); do
             echo "Building $project in Debug..."
             dotnet build "$project" --no-restore -c Debug -p:Platform="x64" -r linux-bionic-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
           done
@@ -182,9 +180,7 @@ jobs:
 
       - name: Build Release for Android arm64-v8a
         run: |
-          SOLUTION_DIR=$(pwd)
-          echo "Solution directory: $SOLUTION_DIR"
-          for project in $(dotnet msbuild your-solution.sln -t:ShowProjectsInBuildOrder -nologo); do
+          for project in $(dotnet msbuild MelonLoader.sln -t:ShowProjectsInBuildOrder -nologo); do
             echo "Building $project in Release..."
             dotnet build "$project" --no-restore -c Release -p:Platform="x64" -r linux-bionic-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
           done
