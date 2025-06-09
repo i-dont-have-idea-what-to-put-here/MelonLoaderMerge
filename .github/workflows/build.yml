@@ -168,8 +168,8 @@ jobs:
       - name: Build Debug for android-arm64
         run: |
           dotnet build --no-restore -c Debug -p:Platform="x64" -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
-          dotnet build MelonLoader/MelonLoader.csproj --no-incremental --no-restore -c Debug -p:Platform="x64" -r android-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
-          dotnet build MelonLoader.Bootstrap/MelonLoader.Bootstrap.csproj --no-incremental --no-restore -c Debug -p:Platform="x64" -r android-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
+          dotnet build MelonLoader/MelonLoader.csproj --no-incremental --no-restore -c Debug -r android-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
+          dotnet build MelonLoader.Bootstrap/MelonLoader.Bootstrap.csproj --no-incremental --no-restore -c Debug -r android-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
 
       - name: Upload Debug for android-arm64
         uses: actions/upload-artifact@v4
@@ -180,8 +180,8 @@ jobs:
       - name: Build Release for android-arm64
         run: |
           dotnet build --no-restore -c Release -p:Platform="x64" -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
-          dotnet build MelonLoader/MelonLoader.csproj --no-incremental --no-restore -c Release -p:Platform="x64" -r android-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
-          dotnet build MelonLoader.Bootstrap/MelonLoader.Bootstrap.csproj --no-incremental --no-restore -c Release -p:Platform="x64" -r android-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
+          dotnet build MelonLoader/MelonLoader.csproj --no-incremental --no-restore -c Release -r android-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
+          dotnet build MelonLoader.Bootstrap/MelonLoader.Bootstrap.csproj --no-incremental --no-restore -c Release -r android-arm64 -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
 
       - name: Upload Release for android-arm64
         uses: actions/upload-artifact@v4
