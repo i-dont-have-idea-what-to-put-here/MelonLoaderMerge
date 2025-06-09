@@ -52,14 +52,14 @@ public static class AndroidProxy
     }
     
     [UnmanagedCallersOnly(EntryPoint = "JNI_OnLoad")]
-    public static unsafe JNI.Version JNI_OnLoad(IntPtr vm, void* reserved)
+    public static unsafe int JNI_OnLoad(IntPtr vm, void* reserved)
     {
         JNI.Initialize(vm);
         JClass nativeLoader = JNI.FindClass("com/unity3d/player/NativeLoader");
         if (!nativeLoader.Valid())
         {
             Log("Cannot find NativeLoader class");
-            return JNI.Version.V1_6;
+            return (int)JNI.Version.V1_6;
         }
      
         var methods = (JNINativeMethod*)NativeMemory.Alloc((nuint)(sizeof(JNINativeMethod) * 2));
@@ -72,7 +72,7 @@ public static class AndroidProxy
         {
             Log("Failed to register native methods");
         }
-        return JNI.Version.V1_6;
+        return (int)JNI.Version.V1_6;
     }
 
     private unsafe struct JNINativeMethod

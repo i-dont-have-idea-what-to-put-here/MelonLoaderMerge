@@ -138,6 +138,7 @@ internal static class Exports
 
     private static MainFn? _originalMain;
     
+#if (LINUX || OSX) && !ANDROID
     // The Linux entrypoint involves exposing our version of __libc_start_main as it's the only
     // symbol we have a guarantee will be called no matter the Unity version. Helpfully for us,
     // the function receives the main function as argument so we can capture it and pass our own
@@ -169,6 +170,7 @@ internal static class Exports
         _originalMain ??= Marshal.GetDelegateForFunctionPointer<MainFn>((nint)main);
         return LibcNative.LibCStartMain(&HookPlayerMain, argc, argv, init, fini, rtLdFini, stackEnd);
     }
+#endif
 
     // This should only be called following a successful redirection by our __libc_start_main hook, and it
     // should only ever be called once since this getting called implies we removed ourselves from

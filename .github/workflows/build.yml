@@ -135,7 +135,7 @@ jobs:
   
   build_android:
     name: Build Android Binaries
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
       
@@ -146,39 +146,48 @@ jobs:
 
       - name: Setup Android NDK
         id: setup-ndk
-        uses: nttld/setup-ndk@v1
+        uses: nttld/setup-ndk@v1.5.0
         with:
           ndk-version: r27c
-          add-to-path: false
-
-      - name: Set Android NDK environment
-        run: |
-          echo "ANDROID_NDK_ROOT=${{ steps.setup-ndk.outputs.ndk-path }}" >> $GITHUB_ENV
-          echo "ANDROID_NDK_HOME=${{ steps.setup-ndk.outputs.ndk-path }}" >> $GITHUB_ENV
+          add-to-path: true
 
       - name: Verify NDK installation
         run: |
-          echo "NDK Root: $ANDROID_NDK_ROOT"
-          ls -la "$ANDROID_NDK_ROOT"
-          cat "$ANDROID_NDK_ROOT/source.properties"
+          echo "NDK Root: ${env:ANDROID_NDK_ROOT}"
+          dir "${env:ANDROID_NDK_ROOT}"
+          type "${env:ANDROID_NDK_ROOT}\source.properties"
+        env:
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+          ANDROID_NDK_ROOT: ${{ steps.setup-ndk.outputs.ndk-path }}
 
       - name: Restore Dependencies
-        run: dotnet restore
+        run: dotnet restore -r linux-bionic-arm64
+        env:
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+          ANDROID_NDK_ROOT: ${{ steps.setup-ndk.outputs.ndk-path }}
 
-      - name: Build Debug for linux-bionic-arm64
-        run: dotnet publish MelonLoader.Bootstrap/MelonLoader.Bootstrap.csproj --no-restore -c Debug -p:RuntimeIdentifier="linux-bionic-arm64" -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
+      - name: Build Debug for android-arm64
+        run: |
+          dotnet build --no-restore -c Debug -p:Platform="x64" -p:AndroidNdkDirectory=${env:ANDROID_NDK_ROOT} -p:RuntimeIdentifier=linux-bionic-arm64 -p:_CommandLineDefinedRuntimeIdentifier=true -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
+        env:
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+          ANDROID_NDK_ROOT: ${{ steps.setup-ndk.outputs.ndk-path }}
 
-      - name: Upload Debug for linux-bionic-arm64
+      - name: Upload Debug for android-arm64
         uses: actions/upload-artifact@v4
         with:
           name: MelonLoader.Android.arm64.CI.Debug
-          path: Output/Debug/linux-bionic-arm64
+          path: Output/Debug/android-arm64
 
-      - name: Build Release for linux-bionic-arm64
-        run: dotnet publish MelonLoader.Bootstrap/MelonLoader.Bootstrap.csproj --no-restore -c Release -p:RuntimeIdentifier="linux-bionic-arm64" -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
+      - name: Build Release for android-arm64
+        run: |
+          dotnet build --no-restore -c Release -p:Platform="x64" -p:RuntimeIdentifier=linux-bionic-arm64 -p:AndroidNdkDirectory=${env:ANDROID_NDK_ROOT} -p:_CommandLineDefinedRuntimeIdentifier=true -p:Version="${{ env.DEVVERSION }}${{ github.event_name != 'workflow_dispatch' && format('.{0}', github.run_number) || '' }}"
+        env:
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+          ANDROID_NDK_ROOT: ${{ steps.setup-ndk.outputs.ndk-path }}
 
-      - name: Upload Release for linux-bionic-arm64
+      - name: Upload Release for android-arm64
         uses: actions/upload-artifact@v4
         with:
           name: MelonLoader.Android.arm64.CI.Release
-          path: Output/Release/linux-bionic-arm64
+          path: Output/Release/android-arm64
